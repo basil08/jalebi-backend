@@ -9,15 +9,15 @@ const app = express();
 
 const PORT = process.env.PORT || 8080;
 
-app.get('/', (req, res) => {
-    return res.json({ health: "ok" });
-});
-
-
 app.use(cors({ origin: "*" }))
 
 var jsonParser = bodyParser.json()
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
+
+app.get('/', (req, res) => {
+    return res.json({ health: "ok" });
+});
 
 
 
