@@ -49,28 +49,28 @@ app.get('/getTokenList', jsonParser, async (req, res) => {
 });
 
 
-app.post("/getWalletBalances", urlencodedParser, async (req, res) => {
-    console.log(req.body);
+app.post("/getWalletBalances", jsonParser, urlencodedParser, async (req, res) => {
     const chainId = req.body.chainId || 1; // chainId defaults to Ethereum
+    // buggy so defaults to Eth anyways
     const walletAddress = req.body.walletAddress;
 
     if (!walletAddress) {
         return res.json({ status: 1, error: "You need to specify a wallet adddress" });
     }
 
-    const url = `https://api.1inch.dev/balance/v1.2/${chainId}/balances/${walletAddress}`;
+    const url = `https://api.1inch.dev/balance/v1.2/1/balances/${walletAddress}`;
 
     try {
-        const resp = await fetch(url, {
+        const response = await fetch(url, {
             headers: getHeaders()
         });
-        const data = await resp.json();
-        console.log(data);
-        if (resp.ok) {
+
+        if (response.ok) {
+            const data = await response.json();
             return res.json({ status: 0, data: data })
         } else {
-            console.error(resp.error);
-            return res.json({ status: 1, error: resp.error })
+            console.error(response.error);
+            return res.json({ status: 1, error: response.error })
         }
     } catch (err) {
         console.error(err);
@@ -270,7 +270,7 @@ app.post("/place-order", async (req, res) => {
         const data = await response.json();
 
         return res.json({ status: 0, data: "Your order was placed successfully!"});
-        
+
     } catch(err) {
         console.error(err);
         return res.json({status: 1, error: err})
